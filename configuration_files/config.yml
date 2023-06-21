@@ -1,0 +1,71 @@
+datasets:
+  - dataset:
+    type: "datumaro / cvat"
+    path: [dataset1, dataset2]
+    download:
+      url: http://localhost:8080
+      token: token
+      project_id: [project_id_1, project_id_2] # Either project id or task id should be in both is not supported.
+      task_id: [task_id_1 , task_id_2]
+      exclude_tasks: [exclude_task_id_3 , exclude_task_id_4] # Only works for project_id_1
+      format: "Datumaro 1.0 or CVAT for images 1.1"
+      include_images: True / False
+      download_path: download_path
+
+    generator:
+      cvat_data_path: path_of_cvat_data  # Optional: Provide the path to CVAT data. Default is 'mount-data/cvat_data'.
+      pollute_back: 4
+      pollute_step: 4
+
+    selects:
+      - select:
+        labels:
+          - label: label_1
+          - label: label_2
+        bboxes:
+          - bbox: label_name
+            attr:
+              quality: [attr1, attr1]
+        exec: selection_module.any_of_annotations(item, select_yml)
+
+    item_manipulations:
+      - item:
+        bboxes:
+          - label_type: label_name
+        polygons:
+          - label_type: label_name
+        exec: image_module.fill_color(item, item_yml, color=125); selection_module.remove_annotation(item, item_yml)
+      - item:
+        labels:
+          - label: label_to_manipulate_1
+        exec: image_module.bitwise_not(item, item_yml)
+
+    remap_labels:
+      default: delete
+      mapping:
+        label_name_2: label_name_1
+        label_name:
+
+    split:
+      subset:
+        train: 0.6
+        valid: 0.4
+
+project_labels: [label_name]
+
+export:
+  format: export_type
+  path: /tmp/export
+
+check_duplicates:
+  target_directory: target
+  hash_type: md5 / perceptual
+  sensitivity: 5
+  duplicate_image_folder: duplicate_images
+
+chunk:
+  target_directory: target_directory
+  target_extension_list: [.extension1, .extension2, .extension3]
+  max_file_count: 500
+  chunked_output_directory_name: chunked_output_directory_name
+  safe_chunk: True / False

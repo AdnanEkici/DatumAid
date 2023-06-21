@@ -1,0 +1,47 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "dataset",
+                "show",
+                "--config_path",
+                "config.yml",
+                "--verbose"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "Dataset Process",
+            "type": "python",
+            "request": "launch",
+            "program": "datumaid/cli.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "dataset",
+                "process",
+                "--config_path",
+                "configuration_files/samples/demo.yml",
+                "--verbose"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "Debug Unit Test",
+            "type": "python",
+            "request": "test",
+            "justMyCode": false
+        }
+    ]
+}

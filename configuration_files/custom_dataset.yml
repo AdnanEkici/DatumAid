@@ -1,0 +1,42 @@
+datasets:
+  - dataset:
+    type: "cvat"
+    path: [dataset1 , dataset2]
+    selects:
+      - select:
+        labels:
+          - label: label_1
+        exec: selection_module.any_of_annotations(item, select_yml)
+
+    generator:
+      cvat_data_path: path_of_cvat_data  # Optional: Provide the path to CVAT data. Default is 'mount-data/cvat_data'.
+      pollute_back: 4
+      pollute_step: 4
+
+    remap_labels:
+      default: keep
+      mapping:
+        label_name_2: label_name_1
+
+    split:
+      subset:
+        train: 1
+
+project_labels: [label]
+
+export:
+  format: custom_dataset
+  type: csv / parquet
+  path: "export_output"
+
+check_duplicates:
+  target_directory: target_folder
+  hash_type: md5 / perceptual
+  sensitivity: 5
+
+chunk:
+  target_directory: target_directory
+  target_extension_list: [.extension1, .extension2, .extension3]
+  max_file_count: 500
+  chunked_output_directory_name: chunked_output_directory_name
+  safe_chunk: True / False

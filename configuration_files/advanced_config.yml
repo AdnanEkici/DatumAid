@@ -1,0 +1,101 @@
+pre-defined:
+  label_name_3_selection:
+    labels: &labels-accepted-label_name_3
+      - label: label_1
+      - label: label_2
+      - label: label_3
+      - label: label_4
+    select: &select-accepted-label_name_3
+      labels: *labels-accepted-label_name_3
+      exec: selection_module.any_of_annotations(item, select_config)
+  label_name_1_selection:
+    select: &select-default-label_name_1
+      bboxes:
+        - label_type: label_name
+          attr:
+            quality: [normal, good]
+      exec: selection_module.any_of_annotations(item, select_config)
+  default_split:
+    split: &dafault-train-test-split
+      subset:
+        keep_defaults: True
+        test: 0.8
+        train: 0.2
+  default_remap:
+    remap_labels: &dafault-remap
+      default: delete
+      mapping:
+        label_name_1: label_name_2
+
+datasets:
+  - dataset:
+    type: "datumaro"
+    path: [dataset1,dataset2,dataset3]
+    selects:
+      - select: *select-accepted-label_name_3
+      - select: *select-default-label_name_1
+    remap_labels: *dafault-remap
+    split: *dafault-train-test-split
+    generator:
+      cvat_data_path: path_of_cvat_data  # Optional: Provide the path to CVAT data. Default is 'mount-data/cvat_data'.
+      pollute_back: 4
+      pollute_step: 4
+
+  - dataset:
+    type: "datumaro"
+    path: [dataset6,dataset7]
+    remap_labels: *dafault-remap
+    split: *dafault-train-test-split
+    generator:
+      cvat_data_path: path_of_cvat_data  # Optional: Provide the path to CVAT data. Default is 'mount-data/cvat_data'.
+      pollute_back: 4
+      pollute_step: 4
+
+  - dataset:
+    type: "datumaro"
+    path: [dataset4,dataset5]
+    selects:
+      - select:
+        labels: *labels-accepted-label_name_3
+        bboxes:
+          - label_type: label_name_1
+            attr:
+              quality: [attr1, attr2]
+        exec: selection_module.any_of_annotations(item, select_config)
+      - select:
+        bboxes:
+          - label_type: label_name_1
+            attr:
+              quality: attr
+        exec: not selection_module.any_of_annotations(item, select_config)
+    remap_labels:
+      default: delete
+      mapping:
+        label_name_3: label_name_1
+        label_name_4:
+    split:
+      subset:
+        train: 0.6
+        val: 0.4
+    generator:
+      cvat_data_path: path_of_cvat_data  # Optional: Provide the path to CVAT data. Default is 'mount-data/cvat_data'.
+      pollute_back: 4
+      pollute_step: 4
+
+project_labels: [label_name_1]
+
+export:
+  format: yolo
+  path: /tmp/export
+
+check_duplicates:
+  target_directory: target
+  hash_type: md5 / perceptual
+  sensitivity: optional default is 5
+
+chunk:
+  target_directory: target_directory
+  target_extension_list: [.extension1, .extension2, .extension3]
+  max_file_count: 500
+  chunked_output_directory_name: chunked_output_directory_name
+  safe_chunk: True / False

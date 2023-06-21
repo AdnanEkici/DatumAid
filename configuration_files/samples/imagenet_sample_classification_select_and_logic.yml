@@ -1,0 +1,35 @@
+datasets:
+  - dataset:
+    type: "datumaro"
+    path: []
+    download:
+      url: url
+      token: token
+      project_id: [] # Either project id or task id should be in both is not supported.
+      task_id: []
+      exclude_tasks: [] # Only works for project_id_1
+      format: "Datumaro 1.0"
+      include_images: True
+      download_path: tmp/download_path
+
+    selects:
+        - select:
+          labels:
+            - label: resolution
+              attr:
+                quality: [good]
+
+          exec: selection_module.any_of_annotations(item, select_yml)
+
+        - select:
+          labels:
+            - label: multiple_objects
+
+          exec: selection_module.any_of_annotations(item, select_yml)
+
+
+project_labels: [bicycle, plane, traffic_lamp]
+
+export:
+  format: "imagenet"
+  path: "classification_dataset"
